@@ -24,6 +24,7 @@ def clase_list (request):
             return JsonResponse(serializer.data, status=201)
         return JsonResponse(serializer.errors, status=400)
 
+
 @csrf_exempt
 def clase_detail (request, pk):
     '''
@@ -51,3 +52,47 @@ def clase_detail (request, pk):
         return HttpResponse(status=204)
 
 
+@csrf_exempt
+def tipo_empaque_list (request):
+    '''
+    Lista de tipos de empaques
+    '''
+    if request.method == 'GET':
+        tipos = Tipo_empaque.objects.all()
+        serializer = TipoEmpaqueSerializer(tipos, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = TipoEmpaqueSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)
+
+
+@csrf_exempt
+def tipo_empaque_detail (request, pk):
+    '''
+    Detalle de tipos de empaque
+    '''
+    try:
+        tipo = Tipo_empaque.objects.get(pk=pk)
+    except Tipo_empaque.DoesNotExist:
+        return HttpResponse(status=404)
+
+    if request.method == 'GET':
+        serializer = ClaseSerializer(tipo)
+        return JsonResponse(serializer.data)
+
+    elif request.method == 'PUT':
+        data = JSONParser().parse(request)
+        serializer = ClaseSerializer(tipo, data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)
+
+    elif request.method == 'DELETE':
+        tipo.delete()
+        return HttpResponse(status=204)

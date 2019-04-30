@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.validators import MaxLengthValidator, RegexValidator
 
-class Clase (models.Model):
+class Clase (models.Model):  # Servicio listo (lista, creacion, edicion y eliminar)
     '''
         Clasificacion del empaque
     '''
@@ -12,7 +12,7 @@ class Clase (models.Model):
         return self.nombre
 
 
-class Tipo_empaque (models.Model):
+class Tipo_empaque (models.Model):  # Servicio listo (listar, crear, edicion y eliminar)
     '''
         Tipo de empaque (cilindros, pallets, entre otros)
     '''
