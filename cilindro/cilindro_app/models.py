@@ -17,7 +17,7 @@ class Tipo_empaque (models.Model):
         Tipo de empaque (cilindros, pallets, entre otros)
     '''
     nombre = models.CharField(max_length=10, help_text='Tipo de empaque (ej. Cilindro, pallet, etc')
-    descripcion = models.CharField(max_length=30)
+    descripcion = models.CharField(max_length=30, null=True, blank=True)
 
     def __str__(self):
         return self.nombre
@@ -28,7 +28,7 @@ class Estado_empaque (models.Model):
         Estado fisico del empaque
     '''
     nombre = models.CharField(max_length=10, help_text='Estado del empaque (bueno, danado, en reparacion...)')
-    descripcion = models.CharField(max_length=30)
+    descripcion = models.CharField(max_length=30, null=True, blank=True)
 
     def __str__(self):
         return self.nombre
@@ -49,8 +49,8 @@ class Modelo (models.Model):
     '''
         Modelo del empaque
     '''
-    nombre = models.CharField(max_length=10)
-    descripcion = models.CharField(max_length=30)
+    nombre = models.CharField(max_length=40)
+    descripcion = models.CharField(max_length=30, null=True, blank=True)
 
     def __str__(self):
         return self.nombre
@@ -61,7 +61,7 @@ class Ciudad (models.Model):
         Ciudad de la bodega
     '''
     nombre = models.CharField(max_length=10)
-    descripcion = models.CharField(max_length=30)
+    descripcion = models.CharField(max_length=30, blank=True, null=True)
 
     def __str__(self):
         return self.nombre
@@ -83,7 +83,7 @@ class Estado_disponibilidad (models.Model):
         Estado de disponibilidad del empaque (ej. Lleno, Vacio, en uso)
     '''
     nombre = models.CharField(max_length=10, help_text='Ej. Lleno, Vacio, En Uso')
-    descripcion = models.CharField(max_length=30)
+    descripcion = models.CharField(max_length=30, null=True, blank=True)
 
     def __str__(self):
         return self.nombre
@@ -102,35 +102,38 @@ class Ubicacion (models.Model):
 
 class Empresa (models.Model):
 
-    codigo = models.CharField(max_length=5)
+    codigo = models.CharField(max_length=5, primary_key=True)
     nombre = models.CharField(max_length=15, null=False, blank=False)
     RUC = models.CharField(max_length=13)
-    direccion = models.CharField(max_length=20)
-    telefono = models.CharField(max_length=10)
+    direccion = models.CharField(max_length=20, null=True, blank=True)
+    telefono = models.CharField(max_length=10, null=True, blank=True)
 
     def __str__(self):
         return self.nombre
 
 
-class Representante_empresa (models.Model):
-
-    cedula = models.CharField(max_length=10, null=False, blank=False)
-    nombre = models.CharField(max_length=10)
-    nombre_carta = models.CharField(max_length=20, blank=False, default=nombre)
-    telefono = models.CharField(max_length=10)
-    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, null=False, blank=False)
-
-    def __str__(self):
-        return '{} - {}'.format(self.nombre, self.empresa.__str__())
-
-
 class Correo (models.Model):
 
     correo = models.EmailField(null=False, blank=False)
-    persona = models.ForeignKey(Representante_empresa, blank=False, null=False, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.correo
+
+
+class Representante_empresa (models.Model):
+
+    cedula = models.CharField(max_length=10, null=False, blank=False)
+    nombre = models.CharField(max_length=30)
+    nombre_carta = models.CharField(max_length=45, blank=True, default='')
+    telefono = models.CharField(max_length=10, blank=True, null=True)
+    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, null=False, blank=False)
+    correos = models.ManyToManyField(Correo, null=True, blank=True)
+
+    def __str__(self):
+        if self.nombre == '..Brenntag':
+            return self.nombre
+        return '{} - {}'.format(self.nombre, self.empresa.__str__())
+
 
 
 class Custodio (models.Model):
@@ -138,7 +141,9 @@ class Custodio (models.Model):
     vendedor = models.ForeignKey(Representante_empresa, on_delete=models.CASCADE, related_name='vendedor')
 
     def __str__(self):
-        return self.representante.__str__() + '|' + self.vendedor.nombre
+        if self.representante.nombre == '..Brenntag':
+            return '..Brenntag'
+        return self.representante.__str__() + ' | ' + self.vendedor.nombre
 
 
 class Empaque (models.Model):
@@ -152,7 +157,8 @@ class Empaque (models.Model):
     modelo = models.ForeignKey(Modelo, on_delete=models.CASCADE, null=True, blank=True)
     estado = models.ForeignKey(Estado_empaque, on_delete=models.CASCADE, null=False, blank=False)
     ubicacion = models.ForeignKey(Ubicacion, on_delete=models.CASCADE, null=False)
-    valor = models.FloatField(help_text='Costo en dolares')
+    costo = models.FloatField(help_text='En dolares', null=True, blank=True)
+    precio = models.FloatField(help_text='En dolares', null=True, blank=True)
     custodio = models.ForeignKey(Custodio, on_delete=models.CASCADE)
 
     def __str__(self):
