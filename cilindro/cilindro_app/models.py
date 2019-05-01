@@ -89,7 +89,7 @@ class Estado_disponibilidad (models.Model):  # sin servicio
         return self.nombre
 
 
-class Ubicacion (models.Model):
+class Ubicacion (models.Model): # Servicio listo (listar)
     '''
         Direccion, y estado de disponibilidad del empaque
     '''

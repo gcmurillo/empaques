@@ -139,3 +139,123 @@ class UbicacionDetail (mixins.RetrieveModelMixin, generics.GenericAPIView):
 
     def get(self, request, *args, **kwargs):
         return self.retrieve(self, *args, **kwargs)
+
+
+class EmpresaList (mixins.ListModelMixin,
+                   mixins.CreateModelMixin,
+                   generics.GenericAPIView):
+    queryset = Empresa.objects.all()
+    serializer_class = EmpresaSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+
+class EmpresaDetail (mixins.RetrieveModelMixin,
+                     mixins.UpdateModelMixin,
+                     generics.GenericAPIView):
+    queryset = Empresa.objects.all()
+    serializer_class = EmpresaSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def put(self, requets, *args, **kwargs):
+        return self.update(requets, *args, **kwargs)
+
+
+class RepresentanteList (mixins.ListModelMixin,
+                         mixins.CreateModelMixin,
+                         generics.GenericAPIView):
+    queryset = Representante_empresa.objects.all()
+    serializer_class = RepresentanteSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+
+class RepresentanteDetail (mixins.RetrieveModelMixin,
+                           mixins.UpdateModelMixin,
+                           generics.GenericAPIView):
+    queryset = Representante_empresa.objects.all()
+    serializer_class = RepreSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(self, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+
+class VendedorList (mixins.ListModelMixin,
+                    mixins.CreateModelMixin,
+                    generics.GenericAPIView):
+    queryset = Representante_empresa.objects.filter(empresa__codigo='001')
+    serializer_class = VendedorSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        nombre = request.data['nombre']
+        cedula = request.data['cedula']
+        empresa_brenntag = Empresa.objects.get(codigo='001')
+        Representante_empresa.objects.create(nombre=nombre,
+                                             cedula=cedula,
+                                             empresa=empresa_brenntag)
+        return HttpResponse(status=201)
+
+
+class CustodioList (mixins.ListModelMixin,
+                    mixins.CreateModelMixin,
+                    generics.GenericAPIView):
+    queryset = Custodio.objects.all()
+    serializer_class = CustodioSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+
+class CustodioDetail (mixins.RetrieveModelMixin, generics.GenericAPIView):
+    queryset = Custodio.objects.all()
+    serializer_class = CustodioDetailSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+
+class EmpaquesList (mixins.ListModelMixin,
+                    mixins.CreateModelMixin,
+                    generics.GenericAPIView):
+    queryset = Empaque.objects.all()
+    serializer_class = EmpaqueSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+
+class EmpaquesDetail (mixins.RetrieveModelMixin,
+                      mixins.UpdateModelMixin,
+                      generics.GenericAPIView):
+    queryset = Empaque.objects.all()
+    serializer_class = EmpaqueDetailSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.put(request, *args, **kwargs)
+
+
