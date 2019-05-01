@@ -123,3 +123,19 @@ class ModeloDetail (mixins.RetrieveModelMixin,
 
     def put(self, request, *args, **kwargs):
         return self.update(self, *args, **kwargs)
+
+
+class UbicacionList (mixins.ListModelMixin, generics.GenericAPIView):
+    queryset = Ubicacion.objects.all()
+    serializer_class = UbicacionSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+
+class UbicacionDetail (mixins.RetrieveModelMixin, generics.GenericAPIView):
+    queryset = Ubicacion.objects.all()
+    serializer_class = UbicacionSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(self, *args, **kwargs)

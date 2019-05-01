@@ -14,4 +14,6 @@ urlpatterns = [
     path('marcas/<int:pk>/', MarcasDetail.as_view()),
     path('modelos/', ModeloList.as_view()),
     path('modelos/<int:pk>/', ModeloDetail.as_view()),
+    path('ubicaciones/', UbicacionList.as_view()),
+    path('ubicaciones/<int:pk>/', UbicacionDetail.as_view()),
 ]
