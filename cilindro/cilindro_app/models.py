@@ -12,7 +12,7 @@ class Clase (models.Model):  # Servicio listo (lista, creacion, edicion y elimin
         return self.nombre
 
 
-class Tipo_empaque (models.Model):  # Servicio listo (listar, crear, edicion y eliminar)
+class Tipo_empaque (models.Model):  # Servicio listo (listar)
     '''
         Tipo de empaque (cilindros, pallets, entre otros)
     '''
@@ -23,7 +23,7 @@ class Tipo_empaque (models.Model):  # Servicio listo (listar, crear, edicion y e
         return self.nombre
 
 
-class Estado_empaque (models.Model):
+class Estado_empaque (models.Model): # Servicio listo (listar, crear, modificar)
     '''
         Estado fisico del empaque
     '''
@@ -34,7 +34,7 @@ class Estado_empaque (models.Model):
         return self.nombre
 
 
-class Marca (models.Model):
+class Marca (models.Model): # Servicio (listar, crear, modificar)
     '''
         Fabricante del empaque
     '''
@@ -45,7 +45,7 @@ class Marca (models.Model):
         return self.nombre
 
 
-class Modelo (models.Model):
+class Modelo (models.Model): # Servicio (listar, crear, modificar)
     '''
         Modelo del empaque
     '''
@@ -56,7 +56,7 @@ class Modelo (models.Model):
         return self.nombre
 
 
-class Ciudad (models.Model):
+class Ciudad (models.Model):  # sin servicio
     '''
         Ciudad de la bodega
     '''
@@ -67,7 +67,7 @@ class Ciudad (models.Model):
         return self.nombre
 
 
-class Bodega (models.Model):
+class Bodega (models.Model):  # Sin servicio
     '''
     Deposito de empaques
     '''
@@ -78,7 +78,7 @@ class Bodega (models.Model):
         return self.nombre
 
 
-class Estado_disponibilidad (models.Model):
+class Estado_disponibilidad (models.Model):  # sin servicio
     '''
         Estado de disponibilidad del empaque (ej. Lleno, Vacio, en uso)
     '''

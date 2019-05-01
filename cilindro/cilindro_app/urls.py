@@ -2,8 +2,16 @@ from django.urls import path, include
 from .views import *
 
 urlpatterns = [
-    path('clases/', clase_list),
-    path('clases/<int:pk>/', clase_detail),
-    path('tipo_empaques/', tipo_empaque_list),
-    path('tipo_empaques/<int:pk>/', tipo_empaque_detail),
+    # API endpoints
+    path('', API_index),
+    path('clases/', ClaseList.as_view()),
+    path('clases/<int:pk>/', ClaseDetail.as_view()),
+    path('tipo_empaques/', TipoEmpaqueList.as_view()),
+    path('tipo_empaques/<int:pk>/', TipoEmpaqueDetail.as_view()),
+    path('estado_empaques/', EstadoEmpaqueList.as_view()),
+    path('estado_empaques/<int:pk>/', EstadoEmpaqueDetail.as_view()),
+    path('marcas/', MarcasList.as_view()),
+    path('marcas/<int:pk>/', MarcasDetail.as_view()),
+    path('modelos/', ModeloList.as_view()),
+    path('modelos/<int:pk>/', ModeloDetail.as_view()),
 ]

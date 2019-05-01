@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+  <head>
+      <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+        <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <title>Empaques API</title>
+  </head>
+  <body>
+    <h1 style="text-align: center">Empaques API <span class="badge badge-secondary">V1</span></h1>
+
+    <section id="tabs" class="project-tab">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <nav>
+                            <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+                                <h2 class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" role="tab" aria-selected="true">Clases</h2>
+                            </div>
+                        </nav>
+                        <div class="tab-content" id="nav-tabContent">
+                            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                                <table class="table" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Endpoint</th>
+                                            <th>Request</th>
+                                            <th>Result</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>clases/</td>
+                                            <td>GET</td>
+                                            <td>List of clases</td>
+                                        </tr>
+                                        <tr>
+                                            <td>clases/:pk:/</td>
+                                            <td>GET</td>
+                                            <td>Detail of a clase</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <nav>
+                            <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+                                <h2 class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" role="tab" aria-selected="true">Tipo Empaques</h2>
+                            </div>
+                        </nav>
+                        <div class="tab-content" id="nav-tabContent">
+                            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                                <table class="table" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Endpoint</th>
+                                            <th>Request</th>
+                                            <th>Result</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>tipo_empaques/</td>
+                                            <td>GET</td>
+                                            <td>List of tipos_empaques</td>
+                                        </tr>
+                                        <tr>
+                                            <td>tipo_empaques/:pk:/</td>
+                                            <td>GET</td>
+                                            <td>Detail of a tipo_empaque</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <nav>
+                            <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+                                <h2 class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" role="tab" aria-selected="true">Estado Empaques</h2>
+                            </div>
+                        </nav>
+                        <div class="tab-content" id="nav-tabContent">
+                            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                                <table class="table" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Endpoint</th>
+                                            <th>Request</th>
+                                            <th>Result</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>estado_empaques/</td>
+                                            <td>GET</td>
+                                            <td>List of estado_empaques</td>
+                                        </tr>
+                                        <tr>
+                                            <td>estado_empaques/</td>
+                                            <td>POST</td>
+                                            <td>Create tipo_empaque</td>
+                                        </tr>
+                                        <tr>
+                                            <td>estado_empaques/:pk:/</td>
+                                            <td>GET</td>
+                                            <td>Detail of tipo_empaque</td>
+                                        </tr>
+                                        <tr>
+                                            <td>estado_empaques/:pk:/</td>
+                                            <td>PUT</td>
+                                            <td>Update a tipo_empaque</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <nav>
+                            <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+                                <h2 class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" role="tab" aria-selected="true">Marcas</h2>
+                            </div>
+                        </nav>
+                        <div class="tab-content" id="nav-tabContent">
+                            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                                <table class="table" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Endpoint</th>
+                                            <th>Request</th>
+                                            <th>Result</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>marcas/</td>
+                                            <td>GET</td>
+                                            <td>List of marcas</td>
+                                        </tr>
+                                        <tr>
+                                            <td>marcas/</td>
+                                            <td>POST</td>
+                                            <td>Create marca</td>
+                                        </tr>
+                                        <tr>
+                                            <td>marcas/:pk:/</td>
+                                            <td>GET</td>
+                                            <td>Detail of marca</td>
+                                        </tr>
+                                        <tr>
+                                            <td>marcas/:pk:/</td>
+                                            <td>PUT</td>
+                                            <td>Update a marca</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <nav>
+                            <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+                                <h2 class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" role="tab" aria-selected="true">Modelos</h2>
+                            </div>
+                        </nav>
+                        <div class="tab-content" id="nav-tabContent">
+                            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                                <table class="table" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Endpoint</th>
+                                            <th>Request</th>
+                                            <th>Result</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>modelos/</td>
+                                            <td>GET</td>
+                                            <td>List of modelos</td>
+                                        </tr>
+                                        <tr>
+                                            <td>modelos/</td>
+                                            <td>POST</td>
+                                            <td>Create modelo</td>
+                                        </tr>
+                                        <tr>
+                                            <td>modelos/:pk:/</td>
+                                            <td>GET</td>
+                                            <td>Detail of marca</td>
+                                        </tr>
+                                        <tr>
+                                            <td>modelos/:pk:/</td>
+                                            <td>PUT</td>
+                                            <td>Update a modelo</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+  </body>
+</html>

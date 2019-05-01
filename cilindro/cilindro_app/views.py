@@ -4,95 +4,122 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from .models import *
 from .serializers import *
-
-
-@csrf_exempt
-def clase_list (request):
-    '''
-    Lista de clases de empaques
-    '''
-    if request.method == 'GET':  # Obtener todas las clases
-        clases = Clase.objects.all()
-        serializer = ClaseSerializer(clases, many=True)
-        return JsonResponse(serializer.data, safe=False)
-
-    elif request.method == 'POST': # Agregar una nueva clase
-        data = JSONParser().parse(request)
-        serializer = ClaseSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
-
+from rest_framework import mixins
+from rest_framework import generics
 
 @csrf_exempt
-def clase_detail (request, pk):
-    '''
-    Detalle de clases
-    '''
-    try:
-        clase = Clase.objects.get(pk=pk)
-    except Clase.DoesNotExist:
-        return HttpResponse(status=404)
-
-    if request.method == 'GET':
-        serializer = ClaseSerializer(clase)
-        return JsonResponse(serializer.data)
-
-    elif request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serializer = ClaseSerializer(clase, data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
-
-    elif request.method == 'DELETE':
-        clase.delete()
-        return HttpResponse(status=204)
+def API_index(request):
+    return render(
+        request,
+        'api_index.html'
+    )
 
 
-@csrf_exempt
-def tipo_empaque_list (request):
-    '''
-    Lista de tipos de empaques
-    '''
-    if request.method == 'GET':
-        tipos = Tipo_empaque.objects.all()
-        serializer = TipoEmpaqueSerializer(tipos, many=True)
-        return JsonResponse(serializer.data, safe=False)
+class ClaseList (mixins.ListModelMixin, generics.GenericAPIView):
+    queryset = Clase.objects.all()
+    serializer_class = ClaseSerializer
 
-    elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = TipoEmpaqueSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
 
 
-@csrf_exempt
-def tipo_empaque_detail (request, pk):
-    '''
-    Detalle de tipos de empaque
-    '''
-    try:
-        tipo = Tipo_empaque.objects.get(pk=pk)
-    except Tipo_empaque.DoesNotExist:
-        return HttpResponse(status=404)
+class ClaseDetail (mixins.RetrieveModelMixin, generics.GenericAPIView):
+    queryset = Clase.objects.all()
+    serializer_class = ClaseSerializer
 
-    if request.method == 'GET':
-        serializer = ClaseSerializer(tipo)
-        return JsonResponse(serializer.data)
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(self, *args, **kwargs)
 
-    elif request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serializer = ClaseSerializer(tipo, data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
 
-    elif request.method == 'DELETE':
-        tipo.delete()
-        return HttpResponse(status=204)
+class TipoEmpaqueList (mixins.ListModelMixin, generics.GenericAPIView):
+    queryset = Tipo_empaque.objects.all()
+    serializer_class = TipoEmpaqueSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+
+class TipoEmpaqueDetail (mixins.RetrieveModelMixin, generics.GenericAPIView):
+    queryset = Tipo_empaque.objects.all()
+    serializer_class = TipoEmpaqueSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(self, *args, **kwargs)
+
+
+class EstadoEmpaqueList (mixins.ListModelMixin,
+                         mixins.CreateModelMixin,
+                         generics.GenericAPIView):
+    queryset = Estado_empaque.objects.all()
+    serializer_class = Estado_empaqueSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+
+class EstadoEmpaqueDetail (mixins.RetrieveModelMixin,
+                           mixins.UpdateModelMixin,
+                           generics.GenericAPIView):
+    queryset = Estado_empaque.objects.all()
+    serializer_class = Estado_empaque
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(self, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(self, *args, **kwargs)
+
+
+class MarcasList (mixins.ListModelMixin,
+                         mixins.CreateModelMixin,
+                         generics.GenericAPIView):
+    queryset = Marca.objects.all()
+    serializer_class = MarcaSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+
+class MarcasDetail (mixins.RetrieveModelMixin,
+                           mixins.UpdateModelMixin,
+                           generics.GenericAPIView):
+    queryset = Marca.objects.all()
+    serializer_class = MarcaSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(self, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(self, *args, **kwargs)
+
+
+class ModeloList (mixins.ListModelMixin,
+                         mixins.CreateModelMixin,
+                         generics.GenericAPIView):
+    queryset = Modelo.objects.all()
+    serializer_class = ModeloSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+
+class ModeloDetail (mixins.RetrieveModelMixin,
+                           mixins.UpdateModelMixin,
+                           generics.GenericAPIView):
+    queryset = Modelo.objects.all()
+    serializer_class = ModeloSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(self, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(self, *args, **kwargs)
