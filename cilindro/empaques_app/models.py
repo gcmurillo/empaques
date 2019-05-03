@@ -5,8 +5,8 @@ class Clase (models.Model):  # Servicio listo (lista, creacion, edicion y elimin
     '''
         Clasificacion del empaque
     '''
-    nombre = models.CharField(max_length=10, help_text='Clase del empaque (ej. Cilindros: C1, C2)')
-    descripcion = models.CharField(max_length=30)
+    nombre = models.CharField(max_length=30, help_text='Clase del empaque (ej. Cilindros: C1, C2)')
+    descripcion = models.CharField(max_length=50, null=True, blank=True)
 
     def __str__(self):
         return self.nombre
@@ -16,8 +16,8 @@ class Tipo_empaque (models.Model):  # Servicio listo (listar)
     '''
         Tipo de empaque (cilindros, pallets, entre otros)
     '''
-    nombre = models.CharField(max_length=10, help_text='Tipo de empaque (ej. Cilindro, pallet, etc')
-    descripcion = models.CharField(max_length=30, null=True, blank=True)
+    nombre = models.CharField(max_length=30, help_text='Tipo de empaque (ej. Cilindro, pallet, etc')
+    descripcion = models.CharField(max_length=50, null=True, blank=True)
 
     def __str__(self):
         return self.nombre
@@ -27,8 +27,8 @@ class Estado_empaque (models.Model): # Servicio listo (listar, crear, modificar)
     '''
         Estado fisico del empaque
     '''
-    nombre = models.CharField(max_length=10, help_text='Estado del empaque (bueno, danado, en reparacion...)')
-    descripcion = models.CharField(max_length=30, null=True, blank=True)
+    nombre = models.CharField(max_length=30, help_text='Estado del empaque (bueno, danado, en reparacion...)')
+    descripcion = models.CharField(max_length=50, null=True, blank=True)
 
     def __str__(self):
         return self.nombre
@@ -38,8 +38,8 @@ class Marca (models.Model): # Servicio (listar, crear, modificar)
     '''
         Fabricante del empaque
     '''
-    nombre = models.CharField(max_length=10, help_text='Nombre del fabricante del empaque')
-    descripcion = models.CharField(max_length=30)
+    nombre = models.CharField(max_length=30, help_text='Nombre del fabricante del empaque')
+    descripcion = models.CharField(max_length=50, null=True, blank=True)
 
     def __str__(self):
         return self.nombre
@@ -50,7 +50,7 @@ class Modelo (models.Model): # Servicio (listar, crear, modificar)
         Modelo del empaque
     '''
     nombre = models.CharField(max_length=40)
-    descripcion = models.CharField(max_length=30, null=True, blank=True)
+    descripcion = models.CharField(max_length=50, null=True, blank=True)
 
     def __str__(self):
         return self.nombre
@@ -60,8 +60,8 @@ class Ciudad (models.Model):  # sin servicio
     '''
         Ciudad de la bodega
     '''
-    nombre = models.CharField(max_length=10)
-    descripcion = models.CharField(max_length=30, blank=True, null=True)
+    nombre = models.CharField(max_length=30)
+    descripcion = models.CharField(max_length=50, null=True, blank=True)
 
     def __str__(self):
         return self.nombre
@@ -71,7 +71,7 @@ class Bodega (models.Model):  # Sin servicio
     '''
     Deposito de empaques
     '''
-    nombre = models.CharField(max_length=10, help_text='Nombre de bodega')
+    nombre = models.CharField(max_length=30, help_text='Nombre de bodega')
     ciudad = models.ForeignKey(Ciudad, on_delete=models.CASCADE, null=False, blank=False)
 
     def __str__(self):
@@ -82,7 +82,7 @@ class Estado_disponibilidad (models.Model):  # sin servicio
     '''
         Estado de disponibilidad del empaque (ej. Lleno, Vacio, en uso)
     '''
-    nombre = models.CharField(max_length=10, help_text='Ej. Lleno, Vacio, En Uso')
+    nombre = models.CharField(max_length=20, help_text='Ej. Lleno, Vacio, En Uso')
     descripcion = models.CharField(max_length=30, null=True, blank=True)
 
     def __str__(self):
@@ -102,10 +102,12 @@ class Ubicacion (models.Model): # Servicio listo (listar)
 
 class Empresa (models.Model):
 
-    codigo = models.CharField(max_length=5, primary_key=True)
-    nombre = models.CharField(max_length=15, null=False, blank=False)
-    RUC = models.CharField(max_length=13)
-    direccion = models.CharField(max_length=20, null=True, blank=True)
+    regex_ruc = r'[0-9]{13}'
+
+    codigo = models.CharField(max_length=10, primary_key=True)
+    nombre = models.CharField(max_length=30, null=False, blank=False)
+    RUC = models.CharField(max_length=13, validators=[RegexValidator(regex_ruc)])
+    direccion = models.CharField(max_length=50, null=True, blank=True)
     telefono = models.CharField(max_length=10, null=True, blank=True)
 
     def __str__(self):
@@ -127,7 +129,7 @@ class Representante_empresa (models.Model):
     nombre_carta = models.CharField(max_length=45, blank=True, default='')
     telefono = models.CharField(max_length=10, blank=True, null=True)
     empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, null=False, blank=False)
-    correos = models.ManyToManyField(Correo, null=True, blank=True)
+    correos = models.ManyToManyField(Correo)
 
     def __str__(self):
         if self.nombre == '..Brenntag':
@@ -148,7 +150,7 @@ class Custodio (models.Model):
 
 class Empaque (models.Model):
 
-    codigo = models.CharField(max_length=8, primary_key=True)
+    codigo = models.CharField(max_length=10, primary_key=True)
     codigo_barras = models.CharField(max_length=12)
     serie = models.CharField(max_length=12)
     tipo_empaque = models.ForeignKey(Tipo_empaque, on_delete=models.CASCADE, null=False, blank=False)
