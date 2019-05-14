@@ -35,5 +35,6 @@ urlpatterns = [
     path('custodios/<int:pk>/', CustodioDetail.as_view()),
     # empaques
     path('empaques/', EmpaquesList.as_view()),
-    path('empaques/<pk>', EmpaquesDetail.as_view()),
+    path('empaques/crear/', EmpaquesCreate.as_view()),
+    path('empaques/<pk>/', EmpaquesDetail.as_view()),
 ]

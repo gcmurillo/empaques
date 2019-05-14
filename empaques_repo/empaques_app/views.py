@@ -234,17 +234,21 @@ class CustodioDetail (mixins.RetrieveModelMixin, generics.GenericAPIView):
 
 
 class EmpaquesList (mixins.ListModelMixin,
-                    mixins.CreateModelMixin,
                     generics.GenericAPIView):
     queryset = Empaque.objects.all()
-    serializer_class = EmpaqueSerializer
+    serializer_class = EmpaqueDetailSerializer
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
+
+class EmpaquesCreate (mixins.CreateModelMixin,
+                      generics.GenericAPIView):
+    queryset = Empaque.objects.all()
+    serializer_class = EmpaqueSerializer
+
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
-
 
 class EmpaquesDetail (mixins.RetrieveModelMixin,
                       mixins.UpdateModelMixin,

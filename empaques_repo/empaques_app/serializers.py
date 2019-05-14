@@ -57,7 +57,12 @@ class UbicacionSerializer (serializers.ModelSerializer):
 
     class Meta:
         model = Ubicacion
-        fields = '__all__'
+        fields = [
+            'id',
+            '__str__',
+            'bodega',
+            'estado_disp',
+        ]
 
 
 class EmpresaSerializer (serializers.ModelSerializer):
