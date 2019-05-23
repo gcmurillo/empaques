@@ -17,6 +17,7 @@ def custom_titled_filter(title):
     return Wrapper
 
 admin.site.register(Ciudad)
+admin.site.register(Marca)
 
 class BodegaAdmin (admin.ModelAdmin):
     model = Bodega
@@ -208,7 +209,50 @@ class EmpaqueAdmin (admin.ModelAdmin):
 
 
 admin.site.register(Empaque, EmpaqueAdmin)
-
-
-
 admin.site.register(Correo)
+
+
+class OrdenAdmin (admin.ModelAdmin):
+    model = Orden
+    list_display = [
+        '__str__',
+        'tipo',
+        'descripcion',
+        'fecha_creacion',
+        'fecha_aprobacion',
+        'ubicacion_inicial',
+        'aprobado',
+        'nueva_ubicacion',
+        'nuevo_custodio',
+        'completo'
+    ]
+
+    list_filter = [
+        'tipo',
+        'fecha_creacion',
+        'ubicacion_inicial',
+        'aprobado',
+        'completo'
+    ]
+
+admin.site.register(Tipo_orden)
+admin.site.register(Orden, OrdenAdmin)
+
+class OrdenEmpaqueDetailAdmin (admin.ModelAdmin):
+    model = OrdenEmpaquesDetail
+    list_display = [
+        '__str__',
+        'orden_id',
+        'empaque_id',
+        'aprobado',
+        'entregado'
+    ]
+
+    list_filter = [
+        'orden_id',
+        'empaque_id',
+        'aprobado',
+        'entregado'
+    ]
+
+admin.site.register(OrdenEmpaquesDetail, OrdenEmpaqueDetailAdmin)

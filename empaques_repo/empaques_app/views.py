@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
@@ -6,6 +5,14 @@ from .models import *
 from .serializers import *
 from rest_framework import mixins
 from rest_framework import generics
+from django.shortcuts import render
+
+from django.contrib.auth import authenticate
+from rest_framework import permissions
+from rest_framework.authtoken.models import Token
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
 
 @csrf_exempt
 def API_index(request):
@@ -13,6 +20,21 @@ def API_index(request):
         request,
         'api_index.html'
     )
+
+
+class LoginView(APIView):
+    permission_classes = [permissions.AllowAny, ]
+
+    def post(self, request, *args, **kwargs):
+        data = request.data
+
+        user = authenticate(username=data.get('username'), password=data.get('password'))
+
+        if user:
+            token, _ = Token.objects.get_or_create(user=user)
+
+            return Response({'token': token.key}, status=200)
+        return Response(status=400)
 
 
 class ClaseList (mixins.ListModelMixin, generics.GenericAPIView):
@@ -235,8 +257,37 @@ class CustodioDetail (mixins.RetrieveModelMixin, generics.GenericAPIView):
 
 class EmpaquesList (mixins.ListModelMixin,
                     generics.GenericAPIView):
-    queryset = Empaque.objects.all()
     serializer_class = EmpaqueDetailSerializer
+
+    def get_queryset(self):
+        queryset = Empaque.objects.all()
+        tipo_empaque = self.request.query_params.get('tipo_empaque', None)
+        clase = self.request.query_params.get('clase', None)
+        modelo = self.request.query_params.get('modelo', None)
+        ubicacion= self.request.query_params.get('ubicacion', None)
+        bodega = self.request.query_params.get('bodega', None)
+        ciudad = self.request.query_params.get('ciudad', None)
+        estado = self.request.query_params.get('estado', None)
+        custodio = self.request.query_params.get('custodio', None)
+        completo = self.request.query_params.get('completo', None)
+        if tipo_empaque is not None:
+            queryset = queryset.filter(tipo_empaque__id=tipo_empaque)
+        if clase is not None:
+            queryset = queryset.filter(clase__id=clase)
+        if ubicacion is not None:
+            queryset = queryset.filter(ubicacion__id=ubicacion)
+        if bodega is not None:
+            queryset = queryset.filter(ubicacion__bodega__id=bodega)
+        if ciudad is not None:
+            queryset = queryset.filter(ubicacion__bodega__ciudad__id=ciudad)
+        if estado is not None:
+            queryset = queryset.filter(estado__id=estado)
+        if custodio is not None:
+            queryset = queryset.filter(custodio__id=custodio)
+        if completo is not None:
+            queryset = queryset.filter(completo=completo)
+        return queryset
+
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
@@ -262,4 +313,55 @@ class EmpaquesDetail (mixins.RetrieveModelMixin,
     def put(self, request, *args, **kwargs):
         return self.put(request, *args, **kwargs)
 
+
+class TipoOrdenList (mixins.ListModelMixin,
+                     generics.GenericAPIView):
+    queryset = Tipo_orden.objects.all()
+    serializer_class = TipoOrdenSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+
+class OrdenList (mixins.ListModelMixin,
+                 generics.GenericAPIView):
+    serializer_class = OrdenDetailSerializer
+
+    def get_queryset(self):
+        queryset = Orden.objects.all()
+        tipo = self.request.query_params.get('tipo', None)
+        if tipo is not None:
+            queryset = queryset.filter(tipo__id=tipo)
+        return queryset
+
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+
+class OrdenCreate (mixins.CreateModelMixin,
+                   generics.GenericAPIView):
+    queryset = Orden.objects.all()
+    serializer_class = OrdenSerializer
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+
+class OrdenEmpaqueDetailList (mixins.ListModelMixin,
+                              generics.GenericAPIView):
+    queryset = OrdenEmpaquesDetail.objects.all()
+    serializer_class = OrdenEmpaqueDetailSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+
+class OrdenEmpaqueDetailCreate (mixins.CreateModelMixin,
+                                generics.GenericAPIView):
+    queryset = OrdenEmpaquesDetail.objects.all()
+    serializer_class = OrdenEmpaqueSerializer
+
+    def post(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
 

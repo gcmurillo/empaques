@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MaxLengthValidator, RegexValidator
+from django.utils import timezone
 
 class Clase (models.Model):  # Servicio listo (lista, creacion, edicion y eliminar)
     '''
@@ -166,3 +167,50 @@ class Empaque (models.Model):
     def __str__(self):
         return '{} - {}'.format(self.tipo_empaque.__str__(), self.codigo)
 
+
+## Operaciones Models
+
+class Tipo_orden (models.Model):
+
+    nombre = models.CharField(max_length=20)
+    descripcion = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.nombre
+
+
+class Orden (models.Model):
+
+    tipo = models.ForeignKey(Tipo_orden, on_delete=models.CASCADE, null=False, blank=False)
+    nombre = models.CharField(max_length=30, null=True, blank=True)
+    descripcion = models.CharField(max_length=50, null=True, blank=True)
+    fecha_creacion = models.DateTimeField(editable=False)
+    fecha_aprobacion = models.DateTimeField(editable=True, null=True, blank=True)
+    ubicacion_inicial = models.ForeignKey(Ubicacion, on_delete=models.CASCADE, null=False, blank=False, related_name="ubicacion_inicial")
+    aprobado = models.BooleanField(default=False)
+    nueva_ubicacion = models.ForeignKey(Ubicacion, on_delete=models.CASCADE, null=True, blank=True, related_name="nueva_ubicacion")
+    nuevo_custodio = models.ForeignKey(Custodio, on_delete=models.CASCADE, null=True, blank=True)
+    completo = models.BooleanField(default=False,
+                                   help_text='Verdadero, si en el caso de transferencia o transaccion los empaques fueron recibidos')
+
+    def save(self, *args, **kwargs):
+        '''
+        On save, update fecha_creacion
+        '''
+        if not self.id:
+            self.fecha_creacion = timezone.now()
+        return super(Orden, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return '{} - {}'.format(self.tipo.__str__(), self.nombre)
+
+
+class OrdenEmpaquesDetail (models.Model):
+
+    orden_id = models.ForeignKey(Orden, on_delete=models.CASCADE, null=False, blank=False)
+    empaque_id = models.ForeignKey(Empaque, on_delete=models.CASCADE, null=False, blank=False)
+    aprobado = models.BooleanField(default=False)
+    entregado = models.BooleanField(default=False)
+
+    def __str__(self):
+        return '{} | {}'.format(self.orden_id.__str__(), self.empaque_id.__str__())

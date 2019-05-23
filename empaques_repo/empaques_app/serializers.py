@@ -194,3 +194,77 @@ class EmpaqueSerializer (serializers.ModelSerializer):
             'costo',
             'precio',
         ]
+
+
+class TipoOrdenSerializer (serializers.ModelSerializer):
+
+    class Meta:
+        model = Tipo_orden
+        fields = '__all__'
+
+
+class OrdenSerializer (serializers.ModelSerializer):
+
+    class Meta:
+        model = Orden
+        fields = [
+            '__str__',
+            'tipo',
+            'nombre',
+            'descripcion',
+            'fecha_creacion',
+            'fecha_aprobacion',
+            'ubicacion_inicial',
+            'ubicacion_inicial',
+            'aprobado',
+            'nueva_ubicacion',
+            'nuevo_custodio',
+            'completo',
+        ]
+
+
+class OrdenDetailSerializer (serializers.ModelSerializer):
+
+    tipo = TipoOrdenSerializer()
+    ubicacion_inicial = UbicacionSerializer()
+    nueva_ubicacion = UbicacionSerializer()
+    nuevo_custodio = CustodioDetailSerializer()
+
+    class Meta:
+        model = Orden
+        fields = [
+            '__str__',
+            'tipo',
+            'nombre',
+            'descripcion',
+            'fecha_creacion',
+            'fecha_aprobacion',
+            'ubicacion_inicial',
+            'aprobado',
+            'nueva_ubicacion',
+            'nuevo_custodio',
+            'completo',
+        ]
+
+
+class OrdenEmpaqueSerializer (serializers.ModelSerializer):
+
+    class Meta:
+        model = OrdenEmpaquesDetail
+        fields = '__all__'
+
+
+class OrdenEmpaqueDetailSerializer (serializers.ModelSerializer):
+
+    orden_id = OrdenDetailSerializer()
+    empaque_id = EmpaqueDetailSerializer()
+
+    class Meta:
+        model = OrdenEmpaquesDetail
+        fields = [
+            '__str__',
+            'orden_id',
+            'empaque_id',
+            'aprobado',
+            'entregado',
+        ]

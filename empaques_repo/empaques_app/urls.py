@@ -4,6 +4,7 @@ from .views import *
 urlpatterns = [
     # API endpoints
     path('', API_index),
+    path('login/', LoginView.as_view()),
     # clases
     path('clases/', ClaseList.as_view()),
     path('clases/<int:pk>/', ClaseDetail.as_view()),
@@ -37,4 +38,11 @@ urlpatterns = [
     path('empaques/', EmpaquesList.as_view()),
     path('empaques/crear/', EmpaquesCreate.as_view()),
     path('empaques/<pk>/', EmpaquesDetail.as_view()),
+    # ordenes
+    path('tipo_ordenes/', TipoOrdenList.as_view()),
+    path('ordenes/', OrdenList.as_view()),
+    path('ordenes/crear/', OrdenCreate.as_view()),
+    # ordenDetail
+    path('ordenes/empaques/', OrdenEmpaqueDetailList.as_view()),
+    path('ordenes/empaques/crear', OrdenEmpaqueDetailCreate.as_view()),
 ]
