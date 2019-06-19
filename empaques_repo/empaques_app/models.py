@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import MaxLengthValidator, RegexValidator
 from django.utils import timezone
+from django.db.models import signals
 
 class Clase (models.Model):  # Servicio listo (lista, creacion, edicion y eliminar)
     '''
@@ -190,6 +191,9 @@ class Orden (models.Model):
     aprobado = models.BooleanField(default=False)
     nueva_ubicacion = models.ForeignKey(Ubicacion, on_delete=models.CASCADE, null=True, blank=True, related_name="nueva_ubicacion")
     nuevo_custodio = models.ForeignKey(Custodio, on_delete=models.CASCADE, null=True, blank=True)
+    fecha_inicio = models.DateField(editable=True, null=True, blank=True)
+    dias_plazo = models.IntegerField(null=True)
+    fecha_final = models.DateField(editable=False, null=True, blank=True)
     completo = models.BooleanField(default=False,
                                    help_text='Verdadero, si en el caso de transferencia o transaccion los empaques fueron recibidos')
 
@@ -199,7 +203,12 @@ class Orden (models.Model):
         '''
         if not self.id:
             self.fecha_creacion = timezone.now()
+            if self.fecha_inicio is not None and self.dias_plazo is not None:
+                from datetime import timedelta
+                d = timedelta(days=self.dias_plazo)
+                self.fecha_final = self.fecha_inicio + d
         return super(Orden, self).save(*args, **kwargs)
+
 
     def __str__(self):
         return '{} - {}'.format(self.tipo.__str__(), self.nombre)
@@ -207,10 +216,25 @@ class Orden (models.Model):
 
 class OrdenEmpaquesDetail (models.Model):
 
-    orden_id = models.ForeignKey(Orden, on_delete=models.CASCADE, null=False, blank=False)
-    empaque_id = models.ForeignKey(Empaque, on_delete=models.CASCADE, null=False, blank=False)
+    orden = models.ForeignKey(Orden, on_delete=models.CASCADE, null=False, blank=False)
+    empaque = models.ForeignKey(Empaque, on_delete=models.CASCADE, null=False, blank=False)
     aprobado = models.BooleanField(default=False)
     entregado = models.BooleanField(default=False)
 
     def __str__(self):
-        return '{} | {}'.format(self.orden_id.__str__(), self.empaque_id.__str__())
+        return '{} | {}'.format(self.orden.__str__(), self.empaque.__str__())
+
+
+def aprobar_orden(sender, instance, **kwargs):
+    aprobados = OrdenEmpaquesDetail.objects.filter(orden__id=instance.orden.id).values_list('aprobado', flat=True)
+    if len(aprobados) != 0 and False not in aprobados:
+        orden = Orden.objects.get(id=instance.orden.id)
+        orden.aprobado = True
+        orden.save()
+    else:
+        orden = Orden.objects.get(id=instance.orden.id)
+        orden.aprobado = False
+        orden.save()
+
+
+signals.post_save.connect(receiver=aprobar_orden, sender=OrdenEmpaquesDetail)

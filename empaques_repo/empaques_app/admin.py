@@ -224,7 +224,10 @@ class OrdenAdmin (admin.ModelAdmin):
         'aprobado',
         'nueva_ubicacion',
         'nuevo_custodio',
-        'completo'
+        'completo',
+        'fecha_inicio',
+        'dias_plazo',
+        'fecha_final',
     ]
 
     list_filter = [
@@ -232,7 +235,10 @@ class OrdenAdmin (admin.ModelAdmin):
         'fecha_creacion',
         'ubicacion_inicial',
         'aprobado',
-        'completo'
+        'completo',
+        'fecha_inicio',
+        'fecha_final',
+        'fecha_aprobacion',
     ]
 
 admin.site.register(Tipo_orden)
@@ -242,15 +248,15 @@ class OrdenEmpaqueDetailAdmin (admin.ModelAdmin):
     model = OrdenEmpaquesDetail
     list_display = [
         '__str__',
-        'orden_id',
-        'empaque_id',
+        'orden',
+        'empaque',
         'aprobado',
         'entregado'
     ]
 
     list_filter = [
-        'orden_id',
-        'empaque_id',
+        'orden',
+        'empaque',
         'aprobado',
         'entregado'
     ]

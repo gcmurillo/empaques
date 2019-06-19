@@ -1,5 +1,6 @@
-from rest_framework import serializers
+from rest_framework import serializers, fields
 from .models import *
+from django.db.models import Q
 
 class ClaseSerializer (serializers.ModelSerializer):
     class Meta:
@@ -203,7 +204,9 @@ class TipoOrdenSerializer (serializers.ModelSerializer):
         fields = '__all__'
 
 
-class OrdenSerializer (serializers.ModelSerializer):
+class OrdenCreateSerializer (serializers.ModelSerializer):
+
+    # fecha_inicio = fields.DateField(input_formats=['%Y-%m-%d'])
 
     class Meta:
         model = Orden
@@ -212,15 +215,27 @@ class OrdenSerializer (serializers.ModelSerializer):
             'tipo',
             'nombre',
             'descripcion',
-            'fecha_creacion',
-            'fecha_aprobacion',
-            'ubicacion_inicial',
             'ubicacion_inicial',
             'aprobado',
             'nueva_ubicacion',
             'nuevo_custodio',
-            'completo',
+            'fecha_inicio',
+            'dias_plazo',
         ]
+
+class OrdenEmpaqueSetSerializer (serializers.ModelSerializer):
+
+    empaque = EmpaqueDetailSerializer()
+
+    class Meta:
+        model = OrdenEmpaquesDetail
+        fields =[
+            'entregado',
+            'aprobado',
+            'empaque'
+        ]
+
+
 
 
 class OrdenDetailSerializer (serializers.ModelSerializer):
@@ -229,10 +244,13 @@ class OrdenDetailSerializer (serializers.ModelSerializer):
     ubicacion_inicial = UbicacionSerializer()
     nueva_ubicacion = UbicacionSerializer()
     nuevo_custodio = CustodioDetailSerializer()
+    empaques = serializers.SerializerMethodField()
 
     class Meta:
         model = Orden
+        depth = 1
         fields = [
+            'id',
             '__str__',
             'tipo',
             'nombre',
@@ -244,27 +262,42 @@ class OrdenDetailSerializer (serializers.ModelSerializer):
             'nueva_ubicacion',
             'nuevo_custodio',
             'completo',
+            'fecha_inicio',
+            'fecha_final',
+            'dias_plazo',
+            'empaques',
         ]
+
+    def get_empaques(self, object):
+        empaques = OrdenEmpaquesDetail.objects.filter(orden_id=object.id).values_list('empaque', flat=True)
+        qs = Empaque.objects.filter(codigo__in=empaques)
+        return EmpaqueDetailSerializer(qs, many=True).data
 
 
 class OrdenEmpaqueSerializer (serializers.ModelSerializer):
 
     class Meta:
         model = OrdenEmpaquesDetail
-        fields = '__all__'
+        fields = [
+            'orden',
+            'empaque',
+            'aprobado',
+            'entregado',
+        ]
 
 
 class OrdenEmpaqueDetailSerializer (serializers.ModelSerializer):
 
-    orden_id = OrdenDetailSerializer()
-    empaque_id = EmpaqueDetailSerializer()
+    orden = OrdenDetailSerializer()
+    empaque = EmpaqueDetailSerializer()
 
     class Meta:
         model = OrdenEmpaquesDetail
         fields = [
+            'id',
             '__str__',
-            'orden_id',
-            'empaque_id',
+            'orden',
+            'empaque',
             'aprobado',
             'entregado',
         ]

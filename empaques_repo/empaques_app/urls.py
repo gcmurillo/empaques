@@ -36,6 +36,7 @@ urlpatterns = [
     path('custodios/<int:pk>/', CustodioDetail.as_view()),
     # empaques
     path('empaques/', EmpaquesList.as_view()),
+    path('empaques/disponibles/', EmpaqueSelectable.as_view()),
     path('empaques/crear/', EmpaquesCreate.as_view()),
     path('empaques/<pk>/', EmpaquesDetail.as_view()),
     # ordenes
@@ -44,5 +45,6 @@ urlpatterns = [
     path('ordenes/crear/', OrdenCreate.as_view()),
     # ordenDetail
     path('ordenes/empaques/', OrdenEmpaqueDetailList.as_view()),
-    path('ordenes/empaques/crear', OrdenEmpaqueDetailCreate.as_view()),
+    path('ordenes/empaques/enlace/', OrdenEmpaqueDetailCreate.as_view()),
+    path('ordenes/empaques/<int:pk>/', OrdenEmpaqueDetailUpdate.as_view()),
 ]

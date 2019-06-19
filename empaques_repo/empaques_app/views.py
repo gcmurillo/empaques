@@ -270,6 +270,7 @@ class EmpaquesList (mixins.ListModelMixin,
         estado = self.request.query_params.get('estado', None)
         custodio = self.request.query_params.get('custodio', None)
         completo = self.request.query_params.get('completo', None)
+        estado_disp = self.request.query_params.get('estado_disp', None)
         if tipo_empaque is not None:
             queryset = queryset.filter(tipo_empaque__id=tipo_empaque)
         if clase is not None:
@@ -286,8 +287,25 @@ class EmpaquesList (mixins.ListModelMixin,
             queryset = queryset.filter(custodio__id=custodio)
         if completo is not None:
             queryset = queryset.filter(completo=completo)
+        if modelo is not None:
+            queryset = queryset.filter(modelo__id=modelo)
+        if estado_disp is not None:
+            queryset = queryset.filter(ubicacion__estado_disp__id=estado_disp)
         return queryset
 
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+
+class EmpaqueSelectable (mixins.ListModelMixin,
+                         generics.GenericAPIView):
+
+    serializer_class = EmpaqueDetailSerializer
+
+    def get_queryset(self):
+        emps = OrdenEmpaquesDetail.objects.filter(entregado=False).values_list('empaque', flat=True)
+        return Empaque.objects.filter(~Q(codigo__in=emps) & Q(estado__id=1))
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
@@ -342,7 +360,7 @@ class OrdenList (mixins.ListModelMixin,
 class OrdenCreate (mixins.CreateModelMixin,
                    generics.GenericAPIView):
     queryset = Orden.objects.all()
-    serializer_class = OrdenSerializer
+    serializer_class = OrdenCreateSerializer
 
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
@@ -363,5 +381,22 @@ class OrdenEmpaqueDetailCreate (mixins.CreateModelMixin,
     serializer_class = OrdenEmpaqueSerializer
 
     def post(self, request, *args, **kwargs):
-        return self.post(request, *args, **kwargs)
+        return self.create(request, *args, **kwargs)
+
+
+class OrdenEmpaqueDetailUpdate(mixins.UpdateModelMixin,
+                               mixins.DestroyModelMixin,
+                               generics.GenericAPIView):
+
+    queryset = OrdenEmpaquesDetail.objects.all()
+    serializer_class = OrdenEmpaqueSerializer
+
+    def put(self, request, *args, **kwargs):
+        orden = OrdenEmpaquesDetail.objects.get(Q(orden__id=request.data['orden']) &
+                                        Q(empaque__codigo=request.data['empaque']))
+        # orden.save()
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
 
