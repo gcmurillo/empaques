@@ -194,8 +194,9 @@ class Orden (models.Model):
     fecha_inicio = models.DateField(editable=True, null=True, blank=True)
     dias_plazo = models.IntegerField(null=True)
     fecha_final = models.DateField(editable=False, null=True, blank=True)
+    despachado = models.BooleanField(default=False)
     completo = models.BooleanField(default=False,
-                                   help_text='Verdadero, si en el caso de transferencia o transaccion los empaques fueron recibidos')
+                                   help_text='Verdadero, si en el caso de transferencia o transaccion los empaques fueron retornados/recibidos')
 
     def save(self, *args, **kwargs):
         '''

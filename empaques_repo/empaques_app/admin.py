@@ -222,6 +222,7 @@ class OrdenAdmin (admin.ModelAdmin):
         'fecha_aprobacion',
         'ubicacion_inicial',
         'aprobado',
+        'despachado',
         'nueva_ubicacion',
         'nuevo_custodio',
         'completo',

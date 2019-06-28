@@ -132,6 +132,7 @@ class CustodioSerializer (serializers.ModelSerializer):
         ]
 
 
+
 class CustodioDetailSerializer (serializers.ModelSerializer):
     representante = RepreSerializer()
     vendedor = VendedorSerializer()
@@ -262,6 +263,7 @@ class OrdenDetailSerializer (serializers.ModelSerializer):
             'nueva_ubicacion',
             'nuevo_custodio',
             'completo',
+            'despachado',
             'fecha_inicio',
             'fecha_final',
             'dias_plazo',

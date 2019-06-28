@@ -29,11 +29,12 @@ urlpatterns = [
     # representantes
     path('representantes/', RepresentanteList.as_view()),
     path('representantes/<int:pk>/', RepresentanteDetail.as_view()),
+    path('correos/', CorreoList.as_view()),
     # vendedores
     path('vendedores/', VendedorList.as_view()),
     # custodios
-    path('custodios/', CustodioList.as_view()),
-    path('custodios/<int:pk>/', CustodioDetail.as_view()),
+    path('custodios/crear/', CustodioCreate.as_view()),
+    path('custodios/', CustodioDetail.as_view()),
     # empaques
     path('empaques/', EmpaquesList.as_view()),
     path('empaques/disponibles/', EmpaqueSelectable.as_view()),
@@ -43,8 +44,9 @@ urlpatterns = [
     path('tipo_ordenes/', TipoOrdenList.as_view()),
     path('ordenes/', OrdenList.as_view()),
     path('ordenes/crear/', OrdenCreate.as_view()),
+    path('ordenes/<int:pk>/', OrdenUpdate.as_view()),
     # ordenDetail
     path('ordenes/empaques/', OrdenEmpaqueDetailList.as_view()),
     path('ordenes/empaques/enlace/', OrdenEmpaqueDetailCreate.as_view()),
-    path('ordenes/empaques/<int:pk>/', OrdenEmpaqueDetailUpdate.as_view()),
+    path('ordenes/empaques/<int:pk>/', OrdenEmpaqueDetailUpdate.as_view())
 ]

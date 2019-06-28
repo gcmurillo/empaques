@@ -189,6 +189,19 @@ class EmpresaDetail (mixins.RetrieveModelMixin,
         return self.update(requets, *args, **kwargs)
 
 
+class CorreoList (mixins.ListModelMixin,
+                  mixins.CreateModelMixin,
+                  generics.GenericAPIView):
+    queryset = Correo.objects.all()
+    serializer_class = CorreoSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+
 class RepresentanteList (mixins.ListModelMixin,
                          mixins.CreateModelMixin,
                          generics.GenericAPIView):
@@ -234,25 +247,21 @@ class VendedorList (mixins.ListModelMixin,
         return HttpResponse(status=201)
 
 
-class CustodioList (mixins.ListModelMixin,
-                    mixins.CreateModelMixin,
+class CustodioCreate (mixins.CreateModelMixin,
                     generics.GenericAPIView):
     queryset = Custodio.objects.all()
     serializer_class = CustodioSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
 
 
-class CustodioDetail (mixins.RetrieveModelMixin, generics.GenericAPIView):
+class CustodioDetail (mixins.ListModelMixin, generics.GenericAPIView):
     queryset = Custodio.objects.all()
     serializer_class = CustodioDetailSerializer
 
     def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
+        return self.list(request, *args, **kwargs)
 
 
 class EmpaquesList (mixins.ListModelMixin,
@@ -364,6 +373,19 @@ class OrdenCreate (mixins.CreateModelMixin,
 
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
+
+
+class OrdenUpdate (mixins.UpdateModelMixin,
+                   mixins.DestroyModelMixin,
+                   generics.GenericAPIView):
+    queryset = Orden.objects.all()
+    serializer_class = OrdenDetailSerializer
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
 
 
 class OrdenEmpaqueDetailList (mixins.ListModelMixin,
