@@ -1,12 +1,13 @@
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework.parsers import JSONParser
+from rest_framework import status
 from .models import *
 from .serializers import *
 from rest_framework import mixins
 from rest_framework import generics
 from django.shortcuts import render
 
+from rest_framework.decorators import api_view
 from django.contrib.auth import authenticate
 from rest_framework import permissions
 from rest_framework.authtoken.models import Token
@@ -20,6 +21,28 @@ def API_index(request):
         request,
         'api_index.html'
     )
+
+@api_view(['PUT'])
+def despachar(request, pk):
+
+    try:
+        orden = Orden.objects.get(pk=pk)
+    except Orden.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'PUT':
+        if orden.aprobado:
+            serializer = OrdenDespacho(orden, data=request.data)
+            if serializer.is_valid():
+                OrdenEmpaquesDetail.objects.filter(orden__id=orden.id).update(despachado=True)
+                if orden.tipo_id == 1:
+                    values = OrdenEmpaquesDetail.objects.filter(orden__id=orden.id).values_list('empaque', flat=True)
+                    Empaque.objects.filter(codigo__in=values).update(ubicacion=orden.nueva_ubicacion)
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({"errors": "No aprobado"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LoginView(APIView):
@@ -390,8 +413,11 @@ class OrdenUpdate (mixins.UpdateModelMixin,
 
 class OrdenEmpaqueDetailList (mixins.ListModelMixin,
                               generics.GenericAPIView):
-    queryset = OrdenEmpaquesDetail.objects.all()
     serializer_class = OrdenEmpaqueDetailSerializer
+
+    def get_queryset(self):
+        queryset = OrdenEmpaquesDetail.objects.filter(despachado=False)
+        return queryset
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)

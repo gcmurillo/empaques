@@ -221,6 +221,7 @@ class OrdenEmpaquesDetail (models.Model):
     empaque = models.ForeignKey(Empaque, on_delete=models.CASCADE, null=False, blank=False)
     aprobado = models.BooleanField(default=False)
     entregado = models.BooleanField(default=False)
+    despachado = models.BooleanField(default=False)
 
     def __str__(self):
         return '{} | {}'.format(self.orden.__str__(), self.empaque.__str__())
@@ -231,10 +232,12 @@ def aprobar_orden(sender, instance, **kwargs):
     if len(aprobados) != 0 and False not in aprobados:
         orden = Orden.objects.get(id=instance.orden.id)
         orden.aprobado = True
+        orden.fecha_aprobacion = timezone.now()
         orden.save()
     else:
         orden = Orden.objects.get(id=instance.orden.id)
         orden.aprobado = False
+        orden.fecha_aprobacion = None
         orden.save()
 
 

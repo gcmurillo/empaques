@@ -276,6 +276,17 @@ class OrdenDetailSerializer (serializers.ModelSerializer):
         return EmpaqueDetailSerializer(qs, many=True).data
 
 
+class OrdenDespacho (serializers.ModelSerializer):
+
+    class Meta:
+        model = Orden
+        fields = [
+            'tipo',
+            'despachado',
+            'ubicacion_inicial'
+        ]
+
+
 class OrdenEmpaqueSerializer (serializers.ModelSerializer):
 
     class Meta:
@@ -285,6 +296,7 @@ class OrdenEmpaqueSerializer (serializers.ModelSerializer):
             'empaque',
             'aprobado',
             'entregado',
+            'despachado',
         ]
 
 
@@ -302,4 +314,5 @@ class OrdenEmpaqueDetailSerializer (serializers.ModelSerializer):
             'empaque',
             'aprobado',
             'entregado',
+            'despachado',
         ]

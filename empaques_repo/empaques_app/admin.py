@@ -252,14 +252,16 @@ class OrdenEmpaqueDetailAdmin (admin.ModelAdmin):
         'orden',
         'empaque',
         'aprobado',
-        'entregado'
+        'entregado',
+        'despachado',
     ]
 
     list_filter = [
         'orden',
         'empaque',
         'aprobado',
-        'entregado'
+        'entregado',
+        'despachado',
     ]
 
 admin.site.register(OrdenEmpaquesDetail, OrdenEmpaqueDetailAdmin)
