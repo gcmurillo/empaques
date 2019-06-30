@@ -45,6 +45,25 @@ def despachar(request, pk):
             return Response({"errors": "No aprobado"}, status=status.HTTP_400_BAD_REQUEST)
 
 
+@api_view(['PUT'])
+def llenar_empaque(request, pk):
+
+    try:
+        empaque = Empaque.objects.get(pk=pk)
+    except Empaque.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'PUT':
+        if empaque.ubicacion.estado_disp.id == 2:
+            ubicacion_lleno = Ubicacion.objects.get(bodega=empaque.ubicacion.bodega, estado_disp__id=1)
+            empaque.ubicacion = ubicacion_lleno
+            print(empaque.ubicacion)
+            empaque.save()
+            return Response(status=status.HTTP_200_OK)
+        else:
+            return Response({"errors": "No vacio"}, status=status.HTTP_400_BAD_REQUEST)
+
+
 class LoginView(APIView):
     permission_classes = [permissions.AllowAny, ]
 
@@ -380,8 +399,11 @@ class OrdenList (mixins.ListModelMixin,
     def get_queryset(self):
         queryset = Orden.objects.all()
         tipo = self.request.query_params.get('tipo', None)
+        despachado = self.request.query_params.get('despachado', None)
         if tipo is not None:
             queryset = queryset.filter(tipo__id=tipo)
+        if despachado is not None:
+            queryset = queryset.filter(despachado=despachado)
         return queryset
 
 
@@ -423,6 +445,17 @@ class OrdenEmpaqueDetailList (mixins.ListModelMixin,
         return self.list(request, *args, **kwargs)
 
 
+class OrdenEmpaqueDetailPorEntregar (mixins.ListModelMixin,
+                                     generics.GenericAPIView):
+    serializer_class = OrdenEmpaqueDetailSerializer
+
+    def get_queryset(self):
+        return OrdenEmpaquesDetail.objects.filter(despachado=True, entregado=False)
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+
 class OrdenEmpaqueDetailCreate (mixins.CreateModelMixin,
                                 generics.GenericAPIView):
     queryset = OrdenEmpaquesDetail.objects.all()
@@ -442,7 +475,12 @@ class OrdenEmpaqueDetailUpdate(mixins.UpdateModelMixin,
     def put(self, request, *args, **kwargs):
         orden = OrdenEmpaquesDetail.objects.get(Q(orden__id=request.data['orden']) &
                                         Q(empaque__codigo=request.data['empaque']))
-        # orden.save()
+        if orden.orden.tipo.id == 1:
+            empaque = Empaque.objects.get(codigo=request.data['empaque'])
+            bodega = orden.orden.ubicacion_inicial.bodega
+            ubicacion = Ubicacion.objects.get(bodega=bodega, estado_disp__id=2)
+            empaque.ubicacion = ubicacion
+            empaque.save()
         return self.update(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):

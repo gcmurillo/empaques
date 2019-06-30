@@ -229,6 +229,7 @@ class OrdenEmpaquesDetail (models.Model):
 
 def aprobar_orden(sender, instance, **kwargs):
     aprobados = OrdenEmpaquesDetail.objects.filter(orden__id=instance.orden.id).values_list('aprobado', flat=True)
+    entregados = OrdenEmpaquesDetail.objects.filter(orden__id=instance.orden.id).values_list('entregado', flat=True)
     if len(aprobados) != 0 and False not in aprobados:
         orden = Orden.objects.get(id=instance.orden.id)
         orden.aprobado = True
@@ -240,5 +241,13 @@ def aprobar_orden(sender, instance, **kwargs):
         orden.fecha_aprobacion = None
         orden.save()
 
+    if len(entregados) != 0 and False not in entregados:
+        orden = Orden.objects.get(id=instance.orden.id)
+        orden.completo = True
+        orden.save()
+    else:
+        orden = Orden.objects.get(id=instance.orden.id)
+        orden.completo = False
+        orden.save()
 
 signals.post_save.connect(receiver=aprobar_orden, sender=OrdenEmpaquesDetail)

@@ -40,6 +40,7 @@ urlpatterns = [
     path('empaques/disponibles/', EmpaqueSelectable.as_view()),
     path('empaques/crear/', EmpaquesCreate.as_view()),
     path('empaques/<pk>/', EmpaquesDetail.as_view()),
+    path('empaques/llenar/<pk>/', llenar_empaque),
     # ordenes
     path('tipo_ordenes/', TipoOrdenList.as_view()),
     path('ordenes/', OrdenList.as_view()),
@@ -48,5 +49,6 @@ urlpatterns = [
     # ordenDetail
     path('ordenes/empaques/', OrdenEmpaqueDetailList.as_view()),
     path('ordenes/empaques/enlace/', OrdenEmpaqueDetailCreate.as_view()),
-    path('ordenes/empaques/<int:pk>/', OrdenEmpaqueDetailUpdate.as_view())
+    path('ordenes/empaques/<int:pk>/', OrdenEmpaqueDetailUpdate.as_view()),
+    path('ordenes/empaques/por_entregar/', OrdenEmpaqueDetailPorEntregar.as_view())
 ]
