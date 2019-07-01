@@ -2,6 +2,7 @@ from django.db import models
 from django.core.validators import MaxLengthValidator, RegexValidator
 from django.utils import timezone
 from django.db.models import signals
+from django.contrib.auth.models import AbstractUser
 
 class Clase (models.Model):  # Servicio listo (lista, creacion, edicion y eliminar)
     '''
@@ -251,3 +252,24 @@ def aprobar_orden(sender, instance, **kwargs):
         orden.save()
 
 signals.post_save.connect(receiver=aprobar_orden, sender=OrdenEmpaquesDetail)
+
+
+### Tipos de usuario
+
+""" 
+class TiposUsuario(enumerate):
+    CO = "Comercial"
+    OP = "Operaciones"
+
+class AppUser(AbstractUser):
+
+    COMERCIAL = 'CO'
+    OPERACIONES = 'OP'
+    TIPOS_USUARIO_CHOICES = (
+        (COMERCIAL, 'Comercial'),
+        (OPERACIONES, 'Operaciones'),
+    )
+
+    bodega = models.ForeignKey(Bodega, blank=False, null=False, on_delete=models.CASCADE)
+    tipo = models.CharField(choices=TIPOS_USUARIO_CHOICES)
+"""
