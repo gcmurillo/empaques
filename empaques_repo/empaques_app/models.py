@@ -256,20 +256,19 @@ signals.post_save.connect(receiver=aprobar_orden, sender=OrdenEmpaquesDetail)
 
 ### Tipos de usuario
 
-""" 
-class TiposUsuario(enumerate):
-    CO = "Comercial"
-    OP = "Operaciones"
+COMERCIAL = 'CO'
+OPERACIONES = 'OP'
+TIPOS_USUARIO_CHOICES = (
+    (COMERCIAL, 'Comercial'),
+    (OPERACIONES, 'Operaciones'),
+)
 
-class AppUser(AbstractUser):
 
-    COMERCIAL = 'CO'
-    OPERACIONES = 'OP'
-    TIPOS_USUARIO_CHOICES = (
-        (COMERCIAL, 'Comercial'),
-        (OPERACIONES, 'Operaciones'),
-    )
+class EmpaquesUser(AbstractUser):
 
-    bodega = models.ForeignKey(Bodega, blank=False, null=False, on_delete=models.CASCADE)
-    tipo = models.CharField(choices=TIPOS_USUARIO_CHOICES)
-"""
+
+    bodega = models.ForeignKey(Bodega, null=True, blank=True, on_delete=models.CASCADE)
+    tipo = models.CharField(choices=TIPOS_USUARIO_CHOICES, max_length=5, null=True, blank=True)
+
+    def __str__(self):
+        return self.username.__str__()

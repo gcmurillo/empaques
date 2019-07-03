@@ -1,6 +1,10 @@
 from django.contrib import admin
 from .models import *
 from django.db.models import Q
+from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.models import User
+
+from .forms import EmpaquesUserChangeForm, EmpaquesUserCreationForm
 
 admin.site.register(Modelo)
 
@@ -67,6 +71,12 @@ admin.site.register(Tipo_empaque, Tipo_EmpAdmin)
 
 class EmpresaAdmin (admin.ModelAdmin):
     model = Empresa
+    search_fields = [
+        'nombre',
+        'RUC',
+        'codigo'
+    ]
+
     list_display = [
         'nombre',
         'codigo',
@@ -80,6 +90,13 @@ admin.site.register(Empresa, EmpresaAdmin)
 
 class RepresentanteAdmin (admin.ModelAdmin):
     model = Representante_empresa
+
+    search_fields = [
+        'nombre',
+        'nombre_carta',
+        'empresa__nombre'
+    ]
+
     list_display = [
         'nombre',
         'cedula',
@@ -87,9 +104,6 @@ class RepresentanteAdmin (admin.ModelAdmin):
         'telefono',
         'empresa',
         'get_correos'
-    ]
-    list_editable = [
-        'empresa'
     ]
 
     def get_correos(self, obj):
@@ -121,6 +135,12 @@ class CustodioAdmin (admin.ModelAdmin):
         'get_rep_nombre',
         'get_rep_empresa',
         'get_vendedor'
+    ]
+
+    search_fields = [
+        'representante__nombre',
+        'vendedor__nombre',
+        'representante__empresa__nombre'
     ]
 
     def get_rep_nombre(self, obj):
@@ -170,6 +190,14 @@ admin.site.register(Ubicacion, UbicacionAdmin)
 
 class EmpaqueAdmin (admin.ModelAdmin):
     model = Empaque
+
+    search_fields = [
+        'codigo',
+        'clase__nombre',
+        'ubicacion__ciudad__nombre',
+        'ubicacion__bodega__nombre',
+        'custodio____str__'
+    ]
     list_display = [
         '__str__',
         'codigo',
@@ -247,6 +275,11 @@ admin.site.register(Orden, OrdenAdmin)
 
 class OrdenEmpaqueDetailAdmin (admin.ModelAdmin):
     model = OrdenEmpaquesDetail
+    search_fields = [
+        'orden__nombre',
+        'empaque__codigo',
+        'empaque__serie'
+    ]
     list_display = [
         '__str__',
         'orden',
@@ -265,3 +298,26 @@ class OrdenEmpaqueDetailAdmin (admin.ModelAdmin):
     ]
 
 admin.site.register(OrdenEmpaquesDetail, OrdenEmpaqueDetailAdmin)
+
+
+class EmpaquesUserAdmin(UserAdmin):
+    add_form = EmpaquesUserCreationForm
+    form = EmpaquesUserChangeForm
+    model = EmpaquesUser
+    list_display = [
+        '__str__',
+        'bodega',
+        'tipo',
+    ]
+
+    fieldsets = (
+            (None, {'fields': ('username', 'password', 'bodega', 'tipo',)}),
+    )
+
+    add_fieldsets =  (
+            (None, {'fields': ('username', 'password', 'bodega', 'tipo',)}),
+    )
+
+
+
+admin.site.register(EmpaquesUser, EmpaquesUserAdmin)
