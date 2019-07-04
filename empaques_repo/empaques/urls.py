@@ -21,3 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('empaques_app.urls')),
 ]
+
+admin.site.site_header = 'Empaques Web Admin'
+admin.site.site_title = 'Empaques Web Admin'

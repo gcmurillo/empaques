@@ -310,12 +310,18 @@ class EmpaquesUserAdmin(UserAdmin):
         'tipo',
     ]
 
+    list_filter = [
+        'bodega',
+        'tipo',
+        'is_staff',
+    ]
+
     fieldsets = (
-            (None, {'fields': ('username', 'password', 'bodega', 'tipo',)}),
+            (None, {'fields': ('username', 'password', 'bodega', 'tipo', 'is_staff',)}),
     )
 
     add_fieldsets =  (
-            (None, {'fields': ('username', 'password', 'bodega', 'tipo',)}),
+            (None, {'fields': ('username', 'password1', 'password2', 'bodega', 'tipo', 'is_staff',)}),
     )
 
 

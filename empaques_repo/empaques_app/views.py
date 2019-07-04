@@ -74,8 +74,12 @@ class LoginView(APIView):
 
         if user:
             token, _ = Token.objects.get_or_create(user=user)
-
-            return Response({'token': token.key}, status=200)
+            bodega = BodegaSerializer(user.bodega)
+            return Response({
+                'token': token.key,
+                'bodega': bodega.data,
+                'tipo': user.tipo
+            }, status=200)
         return Response(status=400)
 
 
