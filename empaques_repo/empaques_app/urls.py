@@ -41,6 +41,7 @@ urlpatterns = [
     path('empaques/crear/', EmpaquesCreate.as_view()),
     path('empaques/<pk>/', EmpaquesDetail.as_view()),
     path('empaques/llenar/<pk>/', llenar_empaque),
+    path('empaques/crear/upload/', UpdateCilindros.as_view()),
     # ordenes
     path('tipo_ordenes/', TipoOrdenList.as_view()),
     path('ordenes/', OrdenList.as_view()),

@@ -64,6 +64,35 @@ def llenar_empaque(request, pk):
             return Response({"errors": "No vacio"}, status=status.HTTP_400_BAD_REQUEST)
 
 
+class UpdateCilindros(APIView):
+
+    def post(self, request, *args, **kwargs):
+        modelo64 = Modelo.objects.get(nombre='AMONIACO GAS 64 KG')
+        modelo66 = Modelo.objects.get(nombre='AMONIACO GAS 66 KG')
+        tipo_cilindo = Tipo_empaque.objects.get(nombre='cilindro')
+        bueno = Estado_empaque.objects.get(nombre='Bueno')
+        try:
+            cilindros = request.data
+            for cilindro in cilindros:
+                custodio = Custodio.objects.filter(representante__empresa__nombre=cilindro['custodio'])[0]
+                ubicacion = Ubicacion.objects.get(bodega__nombre=cilindro['bodega'], estado_disp__nombre=cilindro['estado'])
+                clase = Clase.objects.get(nombre=cilindro['clase'])
+                Empaque.objects.create(
+                    codigo=cilindro['codigo'],
+                    codigo_barras="00000",
+                    serie=cilindro['serie'],
+                    ubicacion=ubicacion,
+                    clase=clase,
+                    estado=bueno,
+                    modelo=modelo64 if cilindro['clase'] == 'C1' or cilindro['clase'] =='CI' else modelo66,
+                    custodio=custodio,
+                    tipo_empaque=tipo_cilindo
+                )
+            return Response({"datos": request.data, "status": status.HTTP_200_OK}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"errors": e.__str__()}, status=status.HTTP_400_BAD_REQUEST)
+
+
 class LoginView(APIView):
     permission_classes = [permissions.AllowAny, ]
 
