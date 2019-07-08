@@ -108,8 +108,8 @@ class Empresa (models.Model):
     regex_ruc = r'[0-9]{13}'
 
     codigo = models.CharField(max_length=20, primary_key=True)
-    nombre = models.CharField(max_length=30, null=False, blank=False)
-    RUC = models.CharField(max_length=13, validators=[RegexValidator(regex_ruc)])
+    nombre = models.CharField(max_length=50, null=False, blank=False)
+    RUC = models.CharField(max_length=20, validators=[RegexValidator(regex_ruc)])
     direccion = models.CharField(max_length=50, null=True, blank=True)
     telefono = models.CharField(max_length=10, null=True, blank=True)
 
