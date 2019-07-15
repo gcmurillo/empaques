@@ -82,7 +82,7 @@ class UpdateCilindros(APIView):
                     estado = 'En Uso'
                 else:
                     estado = 'Vacio'
-                ubicacion = Ubicacion.objects.get(bodega__nombre=cilindro['bodega'], estado_disp__nombre=estado)
+                ubicacion = Ubicacion.objects.get(bodega__nombre__startwith=cilindro['bodega'], estado_disp__nombre=estado)
                 clase = Clase.objects.get(nombre=cilindro['clase'][:2])
                 Empaque.objects.create(
                     codigo=cilindro['codigo'],
