@@ -78,11 +78,13 @@ class UpdateCilindros(APIView):
             print(cilindro)
             try:
                 custodio = Custodio.objects.filter(representante__empresa__nombre__startswith=str(cilindro['custodio']).strip())[0]
-                if cilindro['estado'] == 'TRANSFERENCIA' or 'PRESTAMO' or 'EN USO':
-                    estado = 'En Uso'
-                else:
+                if cilindro['estado'] != 'VACIO':
                     estado = 'Vacio'
-                ubicacion = Ubicacion.objects.get(bodega__nombre__startwith=cilindro['bodega'], estado_disp__nombre=estado)
+                elif cilindro['estado'] != 'LLENO':
+                    estado = 'Lleno'
+                else:
+                    estado = 'En Uso'
+                ubicacion = Ubicacion.objects.get(bodega__nombre=cilindro['bodega'], estado_disp__nombre=estado)
                 clase = Clase.objects.get(nombre=cilindro['clase'][:2])
                 Empaque.objects.create(
                     codigo=cilindro['codigo'],
