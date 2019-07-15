@@ -78,9 +78,9 @@ class UpdateCilindros(APIView):
             print(cilindro)
             try:
                 custodio = Custodio.objects.filter(representante__empresa__nombre__startswith=str(cilindro['custodio']).strip())[0]
-                if cilindro['estado'] != 'VACIO':
+                if cilindro['estado'] == 'VACIO':
                     estado = 'Vacio'
-                elif cilindro['estado'] != 'LLENO':
+                elif cilindro['estado'] == 'LLENO':
                     estado = 'Lleno'
                 else:
                     estado = 'En Uso'
