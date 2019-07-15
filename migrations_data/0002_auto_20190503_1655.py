@@ -116,7 +116,7 @@ def create_custodio(apps, schema_monitor):
     Correo = apps.get_model('empaques_app', 'Correo')
 
 
-    empresa = Empresa.objects.get(nombre='Brenntag', codigo='001')
+    empresa = Empresa.objects.get(nombre='BRENNTAG', codigo='001')
     # Crear Vendedor
 
     IR = Representante.objects.create(
