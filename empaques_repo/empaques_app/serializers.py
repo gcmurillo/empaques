@@ -154,7 +154,7 @@ class EmpaqueDetailSerializer (serializers.ModelSerializer):
     modelo = ModeloSerializer()
     estado = Estado_empaqueSerializer()
     ubicacion = UbicacionSerializer()
-    custodio = CustodioSerializer()
+    custodio = CustodioDetailSerializer()
 
     class Meta:
         model = Empaque

@@ -23,11 +23,13 @@ def create_ubicacion(apps, schema_monitor):
     Ubicacion = apps.get_model('empaques_app', 'Ubicacion')
 
     gye = Ciudad.objects.create(nombre='Guayaquil')
-    Ciudad.objects.create(nombre='Quito')
-    Ciudad.objects.create(nombre='Ambato')
+    qto = Ciudad.objects.create(nombre='Quito')
+    amb = Ciudad.objects.create(nombre='Ambato')
 
     bodenorte = Bodega.objects.create(nombre='BODENORTE', ciudad=gye)
     agronorte = Bodega.objects.create(nombre='AGRONORTE', ciudad=gye)
+    bquito = Bodega.objects.create(nombre='B. QUITO', ciudad=qto)
+    bambato = Bodega.objects.create(nombre='B. AMBATO', ciudad=amb)
 
     lleno = Estado_disp.objects.create(nombre='Lleno')
     vacio = Estado_disp.objects.create(nombre='Vacio')
@@ -42,6 +44,17 @@ def create_ubicacion(apps, schema_monitor):
     Ubicacion.objects.create(bodega=agronorte, estado_disp=en_uso)
     Ubicacion.objects.create(bodega=agronorte, estado_disp=vacio)
     Ubicacion.objects.create(bodega=agronorte, estado_disp=fuera_servicio)
+    Ubicacion.objects.create(bodega=agronorte, estado_disp=lleno)
+
+    Ubicacion.objects.create(bodega=bquito, estado_disp=en_uso)
+    Ubicacion.objects.create(bodega=bquito, estado_disp=vacio)
+    Ubicacion.objects.create(bodega=bquito, estado_disp=fuera_servicio)
+    Ubicacion.objects.create(bodega=bquito, estado_disp=lleno)
+
+    Ubicacion.objects.create(bodega=bambato, estado_disp=en_uso)
+    Ubicacion.objects.create(bodega=bambato, estado_disp=vacio)
+    Ubicacion.objects.create(bodega=bambato, estado_disp=fuera_servicio)
+    Ubicacion.objects.create(bodega=bambato, estado_disp=lleno)
 
 
 def create_cilindros(apps, schema_monitor):
@@ -75,7 +88,7 @@ def create_cilindros(apps, schema_monitor):
 
     empresa = Empresa.objects.create(
         codigo='001',
-        nombre='Brenntag',
+        nombre='BRENNTAG',
         RUC='0990005087001'
     )
 
@@ -143,6 +156,11 @@ def create_custodio(apps, schema_monitor):
 
     DP = Representante.objects.create(
         nombre="Diana Pazmiño",
+        empresa=empresa
+    )
+
+    SM = Representante.objects.create(
+        nombre="Santiago Muñoz",
         empresa=empresa
     )
 
@@ -705,7 +723,7 @@ def create_custodio(apps, schema_monitor):
 
     repre.correos.add(correo)
 
-    Custodio.objects.create(representante=repre, vendedor=DP)
+    Custodio.objects.create(representante=repre, vendedor=SM)
 
     emp = Empresa.objects.create(
         nombre="BEBIDAS ARCA CONTINENTAL ARCADOR S.A.",
@@ -723,7 +741,7 @@ def create_custodio(apps, schema_monitor):
 
     repre.correos.add(correo)
 
-    Custodio.objects.create(representante=repre, vendedor=DP)
+    Custodio.objects.create(representante=repre, vendedor=SM)
 
     emp = Empresa.objects.create(
         nombre="ABELLITO S.A.",
@@ -741,7 +759,7 @@ def create_custodio(apps, schema_monitor):
 
     repre.correos.add(correo)
 
-    Custodio.objects.create(representante=repre, vendedor=DP)
+    Custodio.objects.create(representante=repre, vendedor=SM)
 
     emp = Empresa.objects.create(
         nombre="PRODUCTORA DE GELATINA ECUATORIANA S.A. PRODEGEL",
@@ -759,7 +777,25 @@ def create_custodio(apps, schema_monitor):
 
     repre.correos.add(correo)
 
-    Custodio.objects.create(representante=repre, vendedor=DP)
+    Custodio.objects.create(representante=repre, vendedor=SM)
+
+    emp = Empresa.objects.create(
+        nombre="LECHE GLORIA - ECUADOR S.A.",
+        codigo="le3006",
+        RUC="1790663973001"
+    )
+
+    repre = Representante.objects.create(
+        nombre="Gabriela Almeida",
+        nombre_carta="Gabriela Almeida",
+        empresa=emp
+    )
+
+    correo = Correo.objects.create(correo="malmeida@andina.com.ec")
+
+    repre.correos.add(correo)
+
+    Custodio.objects.create(representante=repre, vendedor=SM)
 
 
 def create_tipo_orden(apps, schema_monitor):

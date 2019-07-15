@@ -71,12 +71,19 @@ class UpdateCilindros(APIView):
         modelo66 = Modelo.objects.get(nombre='AMONIACO GAS 66 KG')
         tipo_cilindo = Tipo_empaque.objects.get(nombre='cilindro')
         bueno = Estado_empaque.objects.get(nombre='Bueno')
-        try:
-            cilindros = request.data
-            for cilindro in cilindros:
-                custodio = Custodio.objects.filter(representante__empresa__nombre=cilindro['custodio'])[0]
-                ubicacion = Ubicacion.objects.get(bodega__nombre=cilindro['bodega'], estado_disp__nombre=cilindro['estado'])
-                clase = Clase.objects.get(nombre=cilindro['clase'])
+        errores = []
+        # print(request.data)
+        cilindros = request.data
+        for cilindro in cilindros:
+            print(cilindro)
+            try:
+                custodio = Custodio.objects.filter(representante__empresa__nombre__startswith=str(cilindro['custodio']).strip())[0]
+                if cilindro['estado'] == 'TRANSFERENCIA' or 'PRESTAMO' or 'EN USO':
+                    estado = 'En Uso'
+                else:
+                    estado = 'Vacio'
+                ubicacion = Ubicacion.objects.get(bodega__nombre=cilindro['bodega'], estado_disp__nombre=estado)
+                clase = Clase.objects.get(nombre=cilindro['clase'][:2])
                 Empaque.objects.create(
                     codigo=cilindro['codigo'],
                     codigo_barras="00000",
@@ -84,13 +91,18 @@ class UpdateCilindros(APIView):
                     ubicacion=ubicacion,
                     clase=clase,
                     estado=bueno,
-                    modelo=modelo64 if cilindro['clase'] == 'C1' or cilindro['clase'] =='CI' else modelo66,
+                    modelo=modelo64 if clase == 'C1' or clase == 'CI' else modelo66,
                     custodio=custodio,
                     tipo_empaque=tipo_cilindo
                 )
+            except Exception as e:
+                print(e)
+                errores.append(cilindro['codigo'])
+        if len(errores) == 0:
             return Response({"datos": request.data, "status": status.HTTP_200_OK}, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({"errors": e.__str__()}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            print(errores)
+            return Response({"cilindros": errores}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LoginView(APIView):
