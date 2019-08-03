@@ -47,6 +47,7 @@ urlpatterns = [
     path('ordenes/', OrdenList.as_view()),
     path('ordenes/crear/', OrdenCreate.as_view()),
     path('ordenes/despachar/<int:pk>/', despachar),
+    path('ordenes/por_vencer', get_ordenes_por_caducar),
     # ordenDetail
     path('ordenes/empaques/', OrdenEmpaqueDetailList.as_view()),
     path('ordenes/empaques/enlace/', OrdenEmpaqueDetailCreate.as_view()),

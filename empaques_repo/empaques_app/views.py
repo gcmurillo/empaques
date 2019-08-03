@@ -13,6 +13,7 @@ from rest_framework import permissions
 from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from django.utils import timezone
 
 
 @csrf_exempt
@@ -34,10 +35,14 @@ def despachar(request, pk):
         if orden.aprobado:
             serializer = OrdenDespacho(orden, data=request.data)
             if serializer.is_valid():
-                OrdenEmpaquesDetail.objects.filter(orden__id=orden.id).update(despachado=True)
+                OrdenEmpaquesDetail.objects.filter(orden__id=orden.id).update(despachado=True, fecha_despacho=timezone.now())
                 if orden.tipo_id == 1:
                     values = OrdenEmpaquesDetail.objects.filter(orden__id=orden.id).values_list('empaque', flat=True)
-                    Empaque.objects.filter(codigo__in=values).update(ubicacion=orden.nueva_ubicacion)
+                    Empaque.objects.filter(codigo__in=values).update(ubicacion=orden.nueva_ubicacion, custodio=orden.nuevo_custodio)
+                from datetime import timedelta
+                d = timedelta(days=orden.dias_plazo)
+                orden.fecha_despacho = timezone.now()
+                orden.fecha_final = orden.fecha_despacho + d
                 serializer.save()
                 return Response(serializer.data)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -403,7 +408,7 @@ class EmpaqueSelectable (mixins.ListModelMixin,
 
     def get_queryset(self):
         emps = OrdenEmpaquesDetail.objects.filter(entregado=False).values_list('empaque', flat=True)
-        return Empaque.objects.filter(~Q(codigo__in=emps) & Q(estado__id=1))
+        return Empaque.objects.filter(~Q(codigo__in=emps) & Q(estado__id=1) & Q(ubicacion__estado_disp=1))
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
@@ -527,9 +532,24 @@ class OrdenEmpaqueDetailUpdate(mixins.UpdateModelMixin,
             bodega = orden.orden.ubicacion_inicial.bodega
             ubicacion = Ubicacion.objects.get(bodega=bodega, estado_disp__id=2)
             empaque.ubicacion = ubicacion
+            custodio = Custodio.objects.get(representante__nombre='..Brenntag')
+            empaque.custodio = custodio
             empaque.save()
         return self.update(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
 
+@api_view(['GET'])
+def get_ordenes_por_caducar(request):
+
+    try:
+        from datetime import timedelta
+        d = timedelta(days=7)
+        ordenes = Orden.objects.filter(fecha_final__lte=timezone.now() + d, completo=False)
+    except Orden.DoesNotExist:
+        return HttpResponse(status=400)
+
+    if request.method == 'GET':
+        serializer = OrdenDetailSerializer(ordenes, many=True)
+        return Response(serializer.data)

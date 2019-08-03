@@ -254,9 +254,10 @@ class OrdenAdmin (admin.ModelAdmin):
         'nueva_ubicacion',
         'nuevo_custodio',
         'completo',
-        'fecha_inicio',
+        'fecha_despacho',
         'dias_plazo',
         'fecha_final',
+        'fecha_retorno'
     ]
 
     list_filter = [
@@ -265,9 +266,10 @@ class OrdenAdmin (admin.ModelAdmin):
         'ubicacion_inicial',
         'aprobado',
         'completo',
-        'fecha_inicio',
+        'fecha_despacho',
         'fecha_final',
         'fecha_aprobacion',
+        'fecha_retorno',
     ]
 
 admin.site.register(Tipo_orden)
@@ -287,6 +289,9 @@ class OrdenEmpaqueDetailAdmin (admin.ModelAdmin):
         'aprobado',
         'entregado',
         'despachado',
+        'fecha_despacho',
+        'fecha_retorno',
+        'observacion_retorno',
     ]
 
     list_filter = [
@@ -295,6 +300,8 @@ class OrdenEmpaqueDetailAdmin (admin.ModelAdmin):
         'aprobado',
         'entregado',
         'despachado',
+        'fecha_despacho',
+        'fecha_retorno',
     ]
 
 admin.site.register(OrdenEmpaquesDetail, OrdenEmpaqueDetailAdmin)

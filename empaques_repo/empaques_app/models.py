@@ -184,8 +184,8 @@ class Tipo_orden (models.Model):
 class Orden (models.Model):
 
     tipo = models.ForeignKey(Tipo_orden, on_delete=models.CASCADE, null=False, blank=False)
-    nombre = models.CharField(max_length=30, null=True, blank=True)
-    descripcion = models.CharField(max_length=50, null=True, blank=True)
+    nombre = models.CharField(max_length=140, null=True, blank=True)
+    descripcion = models.CharField(max_length=400, null=True, blank=True)
     fecha_creacion = models.DateTimeField(editable=False)
     fecha_aprobacion = models.DateTimeField(editable=True, null=True, blank=True)
     ubicacion_inicial = models.ForeignKey(Ubicacion, on_delete=models.CASCADE, null=False, blank=False, related_name="ubicacion_inicial")
@@ -198,6 +198,8 @@ class Orden (models.Model):
     despachado = models.BooleanField(default=False)
     completo = models.BooleanField(default=False,
                                    help_text='Verdadero, si en el caso de transferencia o transaccion los empaques fueron retornados/recibidos')
+    fecha_despacho = models.DateField(editable=False, null=True, blank=True)
+    fecha_retorno = models.DateField(editable=False, null=True, blank=True)
 
     def save(self, *args, **kwargs):
         '''
@@ -205,10 +207,6 @@ class Orden (models.Model):
         '''
         if not self.id:
             self.fecha_creacion = timezone.now()
-            if self.fecha_inicio is not None and self.dias_plazo is not None:
-                from datetime import timedelta
-                d = timedelta(days=self.dias_plazo)
-                self.fecha_final = self.fecha_inicio + d
         return super(Orden, self).save(*args, **kwargs)
 
 
@@ -223,36 +221,45 @@ class OrdenEmpaquesDetail (models.Model):
     aprobado = models.BooleanField(default=False)
     entregado = models.BooleanField(default=False)
     despachado = models.BooleanField(default=False)
+    fecha_retorno = models.DateTimeField(editable=False, null=True, blank=True)
+    observacion_retorno = models.CharField(max_length=400, null=True, blank=True, default='')
+    fecha_despacho = models.DateTimeField(editable=False, null=True, blank=True)
 
     def __str__(self):
         return '{} | {}'.format(self.orden.__str__(), self.empaque.__str__())
 
 
-def aprobar_orden(sender, instance, **kwargs):
+def update_orden(sender, instance, **kwargs):
     aprobados = OrdenEmpaquesDetail.objects.filter(orden__id=instance.orden.id).values_list('aprobado', flat=True)
     entregados = OrdenEmpaquesDetail.objects.filter(orden__id=instance.orden.id).values_list('entregado', flat=True)
+    orden = Orden.objects.get(id=instance.orden.id)
     if len(aprobados) != 0 and False not in aprobados:
-        orden = Orden.objects.get(id=instance.orden.id)
         orden.aprobado = True
         orden.fecha_aprobacion = timezone.now()
         orden.save()
     else:
-        orden = Orden.objects.get(id=instance.orden.id)
         orden.aprobado = False
         orden.fecha_aprobacion = None
         orden.save()
 
     if len(entregados) != 0 and False not in entregados:
-        orden = Orden.objects.get(id=instance.orden.id)
         orden.completo = True
+        orden.fecha_retorno = timezone.now()
         orden.save()
     else:
-        orden = Orden.objects.get(id=instance.orden.id)
         orden.completo = False
+        orden.fecha_retorno = None
         orden.save()
 
-signals.post_save.connect(receiver=aprobar_orden, sender=OrdenEmpaquesDetail)
+    if instance.entregado and instance.fecha_retorno is None:
+        instance.fecha_retorno = timezone.now()
+        instance.save()
+    else:
+        instance.fecha_retorno = None
 
+
+
+signals.post_save.connect(receiver=update_orden, sender=OrdenEmpaquesDetail)
 
 ### Tipos de usuario
 

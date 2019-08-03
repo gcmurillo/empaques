@@ -268,6 +268,7 @@ class OrdenDetailSerializer (serializers.ModelSerializer):
             'fecha_final',
             'dias_plazo',
             'empaques',
+            'fecha_despacho',
         ]
 
     def get_empaques(self, object):
@@ -297,6 +298,7 @@ class OrdenEmpaqueSerializer (serializers.ModelSerializer):
             'aprobado',
             'entregado',
             'despachado',
+            'observacion_retorno'
         ]
 
 
