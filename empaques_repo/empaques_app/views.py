@@ -14,6 +14,8 @@ from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.utils import timezone
+from django_filters import rest_framework as filters
+from .filters import EmpaqueFilter, OrdenFilter, OrdenEmpaqueFilter
 
 
 @csrf_exempt
@@ -553,3 +555,24 @@ def get_ordenes_por_caducar(request):
     if request.method == 'GET':
         serializer = OrdenDetailSerializer(ordenes, many=True)
         return Response(serializer.data)
+
+
+class EmpaquesFiltered(generics.ListAPIView):
+    queryset = Empaque.objects.all()
+    serializer_class = EmpaqueDetailSerializer
+    filter_backends = (filters.DjangoFilterBackend, )
+    filter_class = EmpaqueFilter
+
+
+class OrdenFiltered (generics.ListAPIView):
+    queryset =  Orden.objects.all()
+    serializer_class = OrdenDetailSerializer
+    filter_backends = (filters.DjangoFilterBackend, )
+    filter_class = OrdenFilter
+
+
+class OrdenEmpaquesFiltered (generics.ListAPIView):
+    queryset = OrdenEmpaquesDetail.objects.all()
+    serializer_class = OrdenEmpaqueDetailSerializer
+    filter_backends = (filters.DjangoFilterBackend, )
+    filter_class = OrdenEmpaqueFilter
